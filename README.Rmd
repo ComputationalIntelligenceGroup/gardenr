@@ -20,10 +20,11 @@ The goal of gardenr is to ...
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-## basic example code
+library(gardenr)
+annotations <- get_all_labels('/home/bmihaljevic/code/gardener-experiment-data/data/') 
+summary(annotations)
 ``` 
 
 ## Path to the data
