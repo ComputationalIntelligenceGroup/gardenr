@@ -9,8 +9,11 @@ get_all_labels <- function(folder) {
   annotations$neuron <- as.factor(annotations$neuron )
   annotations
 }
-# get_all_alternative_types <-
-#   alternative <- read.csv('../data/alternative-types.csv')
+get_alternative_types <- function(folder) {
+  alternative <- read_csv(folder, 'alternative-types.csv')
+  alternative$annotator <- as.factor(alternative$annotator )
+  alternative
+}
 
 # get_all_meta <-
 # get_all_labels_meta <-

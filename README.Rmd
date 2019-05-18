@@ -14,19 +14,30 @@ knitr::opts_chunk$set(
 )
 ```
 
-# gardenr
+# gardenr 
+The goal of gardenr is to ... The user needs to provide the path to the folder containing the data. These can be downloaded from ...(TODO)
 
-The goal of gardenr is to ...
+```{r}
+folder <- '/home/bmihaljevic/code/gardener-experiment-data/data/' 
+```
+
 
 ## Example
 
-
+- `get_all_*` functions, the return data for all 320 cells
 ```{r example}
 library(gardenr)
-annotations <- get_all_labels('/home/bmihaljevic/code/gardener-experiment-data/data/') 
+annotations <- get_all_labels(folder ) 
 summary(annotations)
 ``` 
 
-## Path to the data
+```{r}
+get_alternative_types(folder)
+```
 
-The user needs to provide the path to the folder containing the data. These can be downloaded from ...(TODO)
+From here, it is easy to filter for a given cell, species, etc.
+
+Also, simple functions that work at cell level:
+
+
+
