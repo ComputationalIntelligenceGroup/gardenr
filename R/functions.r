@@ -27,10 +27,7 @@ get_all_meta <- function(folder) {
 #' Does not include alternative type names as their number varies from cell to cell
 get_all_counts <- function(folder) {
   a <- get_all_labels(folder)
-  a$other <- NULL
-  a$complete <- NULL
-  a <- a %>% gather(F1, F2, F3, F4, F5, F6, key = 'feature', value  = 'value')
-  a %>% group_by(feature, value) %>% tally()
+  a <- make_annotations_tidy(a)
   summary <- a %>% group_by(neuron, feature, value) %>% tally()
   summary <- ungroup(summary)
   summary <- summary %>% group_by(neuron) %>% spread(key = 'value', value = 'n')
@@ -42,6 +39,14 @@ get_all_counts <- function(folder) {
   summary <- summary[, cols]
   summary
 }
+make_annotations_tidy <- function(a) {
+  a$other <- NULL
+  a$complete <- NULL
+  a <- a %>% gather(F1, F2, F3, F4, F5, F6, key = 'feature', value  = 'value')
+  a
+}
+
+# a %>% group_by(feature, value) %>% tally()
 get_all_counts_meta <- function(folder) {
   counts <- get_all_counts(folder)
   metadata <- get_all_meta(folder)

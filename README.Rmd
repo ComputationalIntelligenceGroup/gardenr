@@ -97,8 +97,11 @@ table(annotations$complete)
 
 - Filter by confidence in a feature. Here, use the row verions.   
 - Get row frequencies of the different categories
-```{r}
-
+```{r}  
+annot_tidy <- make_annotations_tidy(annotations) 
+annot_tidy %>% group_by(feature, value) %>% tally()
+# library(ggplot2)
+ggplot(annot_tidy, aes(x = value, color = feature)) + geom_bar() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
  
 
