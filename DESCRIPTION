@@ -13,3 +13,4 @@ Imports:
     magrittr,
     tidytext,
     wordcloud
+RoxygenNote: 6.1.1
