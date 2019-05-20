@@ -234,12 +234,36 @@ head(counts)
 #> #   uncharacterized <int>
 ```
 
-We could joint the above with metadata, to get a thorough information
-for each cell.
+We can join the above with metadata, to get a thorough information for
+each cell.
 
 ``` r
 meta_count <- left_join(counts, metadata, by = 'neuron') %>% select(-paper, -original.type, -archive, -neuromorpho.name)
 head(meta_count)
+#> # A tibble: 6 x 26
+#>   neuron intralaminar translaminar intracolumnar transcolumnar centered
+#>   <fct>         <int>        <int>         <int>         <int>    <int>
+#> 1 1                44            2            44             0       44
+#> 2 2                21           26            29            17        4
+#> 3 3                 1           45            36             8        1
+#> 4 4                 9           28            34             2       33
+#> 5 5                 4           43             8            39       30
+#> 6 6                45            1            45             0       44
+#> # … with 20 more variables: displaced <int>, ascending <int>, both <int>,
+#> #   descending <int>, arcade <int>, `Cajal-Retzius` <int>,
+#> #   chandelier <int>, `common basket` <int>, `common type` <int>,
+#> #   `horse-tail` <int>, `large basket` <int>, Martinotti <int>,
+#> #   neurogliaform <int>, other <int>, characterized <int>,
+#> #   uncharacterized <int>, species <fct>, area <fct>, layer <fct>,
+#> #   rotated <lgl>
+```
+
+There is a utility function doing just that:
+
+``` r
+head(get_all_counts_meta(folder) )
+#> Warning: attributes are not identical across measure variables;
+#> they will be dropped
 #> # A tibble: 6 x 26
 #>   neuron intralaminar translaminar intracolumnar transcolumnar centered
 #>   <fct>         <int>        <int>         <int>         <int>    <int>
@@ -309,3 +333,9 @@ unique(alternative$annotator)
 #> [24] 41 43 44 48
 #> 27 Levels: 1 4 7 9 13 14 15 18 19 23 24 25 26 27 29 30 31 34 35 36 ... 48
 ```
+
+Alternative type names
+----------------------
+
+-   Word cloud
+-   How many? Distribution per neuroscients

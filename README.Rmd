@@ -70,11 +70,16 @@ counts <- get_all_counts(folder)
 head(counts)
 ```
 
-We could joint the above with metadata, to get a thorough information for each cell.
+We can join the above with metadata, to get a thorough information for each cell. 
 ```{r}
 meta_count <- left_join(counts, metadata, by = 'neuron') %>% select(-paper, -original.type, -archive, -neuromorpho.name)
 head(meta_count)
 ```
+There is a utility function doing just that:
+```{r}
+head(get_all_counts_meta(folder) )
+```
+
 
 
 These data are also available in a different format, which is a bit easier to analyze
@@ -84,6 +89,9 @@ These data are also available in a different format, which is a bit easier to an
 
 
 # Examples  
+
+
+
 - Those which are other, and have this
 - How many partially labelled cells?
 - ... 
@@ -104,3 +112,7 @@ head(alternative)
 length(unique(alternative$annotator))
 unique(alternative$annotator)
 ``` 
+
+## Alternative type names
+- Word cloud
+- How many? Distribution per neuroscients

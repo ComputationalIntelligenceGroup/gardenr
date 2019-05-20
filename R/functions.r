@@ -42,3 +42,8 @@ get_all_counts <- function(folder) {
   summary <- summary[, cols]
   summary
 }
+get_all_counts_meta <- function(folder) {
+  counts <- get_all_counts(folder)
+  metadata <- get_all_meta(folder)
+  left_join(counts, metadata, by = 'neuron') %>% select(-paper, -original.type, -archive, -neuromorpho.name)
+}
