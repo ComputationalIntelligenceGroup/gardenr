@@ -339,10 +339,27 @@ ggplot(annot_tidy, aes(x = value, color = feature)) + geom_bar() + theme(axis.te
 
 ![](README-unnamed-chunk-14-1.png)
 
--   Filter by confidence in a feature. Here, use the row verions.
+-   Only consider cells with above &gt; 30 neurocientists agreeing on a
+    specific label
+
+``` r
+annot_tidy <- make_annotations_tidy(annotations) 
+#> Warning: attributes are not identical across measure variables;
+#> they will be dropped
+above30 <- annot_tidy %>% group_by(neuron, feature, value) %>% tally() %>% filter(n > 30)
+above30 %>% group_by(feature) %>% summarize(n_distinct(neuron))  
+#> # A tibble: 6 x 2
+#>   feature `n_distinct(neuron)`
+#>   <chr>                  <int>
+#> 1 F1                       237
+#> 2 F2                       240
+#> 3 F3                       216
+#> 4 F4                       219
+#> 5 F5                        57
+#> 6 F6                       305
+```
 
 -   Restrict analysis to unrotated, monkey cells
--   we join, then filter
 
 ``` r
 monkey <- metadata %>% filter(species == 'Monkey')
@@ -395,7 +412,7 @@ other <- annotations %>% group_by(annotator) %>% filter(F5 == 'other') %>% tally
 ggplot(data.frame(types = types$n, cells = other$n), aes(x = types, y = cells)) + geom_point()
 ```
 
-![](README-unnamed-chunk-17-1.png)
+![](README-unnamed-chunk-18-1.png)
 
 -   Words used in alternative types and definitions:
     -   The most common word is \`bitufted’
@@ -425,7 +442,7 @@ alt %>%  count(type, sort = TRUE)
 alt %>%  count(type, sort = TRUE)      %>%  with(wordcloud(type, n, random.order = FALSE, max.words = 50 , colors= brewer.pal(8,"Dark2")))
 ```
 
-![](README-unnamed-chunk-18-1.png)
+![](README-unnamed-chunk-19-1.png)
 
 ``` r
 alt <- alternative 
@@ -450,6 +467,6 @@ alt %>%  count(definition, sort = TRUE)
 alt %>%  count(definition, sort = TRUE)      %>%  with(wordcloud(definition, n, random.order = FALSE, max.words = 50 , colors= brewer.pal(8,"Dark2")))
 ```
 
-![](README-unnamed-chunk-19-1.png)
+![](README-unnamed-chunk-20-1.png)
 
 \`\`\`

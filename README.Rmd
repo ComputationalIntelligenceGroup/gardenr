@@ -101,11 +101,15 @@ annot_tidy %>% group_by(feature, value) %>% tally()
 ggplot(annot_tidy, aes(x = value, color = feature)) + geom_bar() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
  
- 
-- Filter by confidence in a feature. Here, use the row verions.   
+- Only consider cells with above > 30 neurocientists agreeing on a specific label
+```{r} 
+annot_tidy <- make_annotations_tidy(annotations) 
+above30 <- annot_tidy %>% group_by(neuron, feature, value) %>% tally() %>% filter(n > 30)
+above30 %>% group_by(feature) %>% summarize(n_distinct(neuron))  
+```
+
 
 - Restrict analysis to unrotated, monkey cells 
- - we join, then filter  
 ```{r}
 monkey <- metadata %>% filter(species == 'Monkey')
 counts <- get_all_counts_meta(folder)
