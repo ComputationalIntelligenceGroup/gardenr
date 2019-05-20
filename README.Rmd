@@ -95,15 +95,20 @@ These data are also available in a different format, which is a bit easier to an
 table(annotations$complete) 
 ``` 
 
-- How many neuroscientists have provided alternative type names?
+- Filter by confidence in a feature. Here, use the row verions.   
+- Get row frequencies of the different categories
+```{r}
 
+```
+ 
 
-
-- Directly filter by confidence in some variable. Here, use the row verions.   
-
-- Statistics for a species
-   - we join, then filter  
-
+- Restrict analysis to unrotated, monkey cells 
+ - we join, then filter  
+```{r}
+monkey <- metadata %>% filter(species == 'Monkey')
+counts <- get_all_counts_meta(folder)
+counts %>% filter(species == 'Monkey') 
+```  
 
 ### Alternative type names
 
