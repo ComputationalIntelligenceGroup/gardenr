@@ -29,12 +29,12 @@ library(tidyverse)
 #> Registered S3 method overwritten by 'rvest':
 #>   method            from
 #>   read_xml.response xml2
-#> ── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+#> ── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 #> ✔ ggplot2 3.1.1       ✔ purrr   0.3.2  
 #> ✔ tibble  2.1.1       ✔ dplyr   0.8.0.1
 #> ✔ tidyr   0.8.3       ✔ stringr 1.4.0  
 #> ✔ readr   1.3.1       ✔ forcats 0.4.0
-#> ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+#> ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
 ```
@@ -290,52 +290,81 @@ easier to analyze
 ```
 
 Examples
-========
+--------
 
--   Those which are other, and have this
 -   How many partially labelled cells?
--   …
+
+``` r
+table(annotations$complete) 
+#> 
+#> FALSE  TRUE 
+#>   482 13860
+```
+
+-   How many neuroscientists have provided alternative type names?
+
 -   Directly filter by confidence in some variable. Here, use the row
     verions.
 
-``` r
-other <- droplevels(subset(annotations, F5 == 'other'))
-length(unique(other$annotator))   
-#> [1] 27
-```
-
 -   Statistics for a species
     -   we join, then filter
+
+### Alternative type names
+
 -   27 out of 48 neuroscientists provided alternative type names for the
     cells
 
 ``` r
-alternative <- get_alternative_types(folder)
-head(alternative)
-#>   annotator                 type
-#> 1         1      columnar basket
-#> 2         4             bitufted
-#> 3         4  ascending horsetail
-#> 4         4    bipolar horsetail
-#> 5         7 deep layer inhibitor
-#> 6         7       double bouquet
-#>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  definition
-#> 1 This term is not new, I believe. In my view, these cells have a pattern of axonal branching similar to typical basket cells, and also display the curved pre-terminal axons typical of basket cells. At difference with the other types of basket cells (common and large basket cells), their axonal plexus form abundant ascending and descending branches that span several layers. Usually these axons distribute within the space of a column as defined in the proposed manuscript.
-#> 2                                                                                                                                                                                                                                                                                                                                                                                                      I made a mistake. The bitufted cell should be classified as bipolar horsetail cells.
-#> 3                                                                                                                                                                                                                                                                                                                                                                                                                                               Cells with horsetail-shaped ascending axons
-#> 4                                                                                                                                                                                                                                                                                                                                                                                                                                Cells with horsetail-shaped ascending and descending axons
-#> 5                                                                                                                                                                                                                                                                                                                                                                                                       neuron with an axonal domain that targets preferentially deep cortical layers (4-6)
-#> 6                                                                                                                                                                                                                                                                                                                                                                                                        neuron with an axonal domain that targets both deep and superficial layers locally
 length(unique(alternative$annotator))
 #> [1] 27
-unique(alternative$annotator)
+unique(alternative$annotator) 
 #>  [1] 1  4  7  9  13 14 15 18 19 23 24 25 26 27 29 30 31 34 35 36 37 39 40
 #> [24] 41 43 44 48
 #> 27 Levels: 1 4 7 9 13 14 15 18 19 23 24 25 26 27 29 30 31 34 35 36 ... 48
 ```
 
-Alternative type names
-----------------------
+-   How many alternative types per neuroscientist? How many other cells
+    per neuroscientist?
 
--   Word cloud
--   How many? Distribution per neuroscients
+``` r
+types <- alternative %>% group_by(annotator) %>% tally()
+other <- annotations %>% group_by(annotator) %>% filter(F5 == 'other') %>% tally()
+ggplot(data.frame(types = types$n, cells = other$n), aes(x = types, y = cells)) + geom_point()
+```
+
+![](README-unnamed-chunk-15-1.png)
+
+-   Words used in alternative types and definitions:
+    -   The most common word is \`bitufted’
+
+``` r
+library(tidytext)
+library(wordcloud)
+#> Loading required package: RColorBrewer
+alt <- alternative 
+alt$type <- as.character(alternative$type ) 
+alt <- alt %>% unnest_tokens(type, type)
+alt %>%  count(type, sort = TRUE)      
+#> # A tibble: 271 x 2
+#>    type           n
+#>    <chr>      <int>
+#>  1 bitufted      44
+#>  2 arbor         38
+#>  3 bipolar       38
+#>  4 with          36
+#>  5 be            35
+#>  6 could         30
+#>  7 martinotti    29
+#>  8 cell          28
+#>  9 a             26
+#> 10 axonal        25
+#> # … with 261 more rows
+alt %>%  count(type, sort = TRUE)      %>%  with(wordcloud(type, n, random.order = FALSE, max.words = 50 , colors= brewer.pal(8,"Dark2")))
+```
+
+![](README-unnamed-chunk-16-1.png)
+
+``` r
+alt <- alternative 
+alt$definition <- as.character(alternative$definition )
+```

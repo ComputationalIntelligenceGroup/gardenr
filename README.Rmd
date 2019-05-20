@@ -88,31 +88,52 @@ These data are also available in a different format, which is a bit easier to an
 ```
 
 
-# Examples  
-
-
-
-- Those which are other, and have this
+## Examples  
+ 
 - How many partially labelled cells?
-- ... 
-- Directly filter by confidence in some variable. Here, use the row verions. 
-
 ```{r}
-other <- droplevels(subset(annotations, F5 == 'other'))
-length(unique(other$annotator))   
-```   
-
-- Statistics for a species
-   - we join, then filter
-
-- 27 out of 48 neuroscientists provided alternative type names for the cells
-```{r}
-alternative <- get_alternative_types(folder)
-head(alternative)
-length(unique(alternative$annotator))
-unique(alternative$annotator)
+table(annotations$complete) 
 ``` 
 
-## Alternative type names
-- Word cloud
-- How many? Distribution per neuroscients
+- How many neuroscientists have provided alternative type names?
+
+
+
+- Directly filter by confidence in some variable. Here, use the row verions.   
+
+- Statistics for a species
+   - we join, then filter  
+
+
+### Alternative type names
+
+- 27 out of 48 neuroscientists provided alternative type names for the cells 
+```{r}
+length(unique(alternative$annotator))
+unique(alternative$annotator) 
+```    
+
+- How many alternative types per neuroscientist? How many other cells per neuroscientist?
+```{r}
+types <- alternative %>% group_by(annotator) %>% tally()
+other <- annotations %>% group_by(annotator) %>% filter(F5 == 'other') %>% tally()
+ggplot(data.frame(types = types$n, cells = other$n), aes(x = types, y = cells)) + geom_point()
+```
+
+- Words used in alternative types and definitions:
+    - The most common word is `bitufted'
+```{r} 
+library(tidytext)
+library(wordcloud)
+alt <- alternative 
+alt$type <- as.character(alternative$type ) 
+alt <- alt %>% unnest_tokens(type, type)
+alt %>%  count(type, sort = TRUE)      
+alt %>%  count(type, sort = TRUE)      %>%  with(wordcloud(type, n, random.order = FALSE, max.words = 50 , colors= brewer.pal(8,"Dark2")))
+```
+
+```{r} 
+alt <- alternative 
+alt$definition <- as.character(alternative$definition )
+```
+
