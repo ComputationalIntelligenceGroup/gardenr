@@ -79,14 +79,12 @@ There is a utility function doing just that:
 ```{r}
 head(get_all_counts_meta(folder) )
 ```
-
-
-
+  
 These data are also available in a different format, which is a bit easier to analyze
-```{r}
-# TODO
-```
-
+```{r} 
+annot_tidy <- make_annotations_tidy(annotations) 
+head(annot_tidy )
+``` 
 
 ## Examples  
  
@@ -95,7 +93,6 @@ These data are also available in a different format, which is a bit easier to an
 table(annotations$complete) 
 ``` 
 
-- Filter by confidence in a feature. Here, use the row verions.   
 - Get row frequencies of the different categories
 ```{r}  
 annot_tidy <- make_annotations_tidy(annotations) 
@@ -104,6 +101,8 @@ annot_tidy %>% group_by(feature, value) %>% tally()
 ggplot(annot_tidy, aes(x = value, color = feature)) + geom_bar() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
  
+ 
+- Filter by confidence in a feature. Here, use the row verions.   
 
 - Restrict analysis to unrotated, monkey cells 
  - we join, then filter  

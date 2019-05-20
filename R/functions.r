@@ -35,17 +35,19 @@ get_all_counts <- function(folder) {
   summary <- summary %>% group_by(neuron) %>% select(-feature) %>% summarise_all(.funs = sum, na.rm = TRUE)
   summary$None  <- NULL
   summary$V1 <- NULL
-  cols <- c( "neuron",    "intralaminar",   "translaminar", "intracolumnar", "transcolumnar",      "centered",   "displaced",   "ascending",       "both",  "descending",          "arcade","Cajal-Retzius",           "chandelier",         "common basket",   "common type",                  "horse-tail",             "large basket",    "Martinotti",      "neurogliaform",   "other",       "characterized",           "uncharacterized")
-  summary <- summary[, cols]
+  # cols <- c( "neuron",    "intralaminar",   "translaminar", "intracolumnar", "transcolumnar",      "centered",   "displaced",   "ascending",       "both",  "descending",          "arcade","Cajal-Retzius",           "chandelier",         "common basket",   "common type",                  "horse-tail",             "large basket",    "Martinotti",      "neurogliaform",   "other",       "characterized",           "uncharacterized")
+  # summary <- summary[, cols]
   summary
 }
 make_annotations_tidy <- function(a) {
   a$other <- NULL
   a$complete <- NULL
   a <- a %>% gather(F1, F2, F3, F4, F5, F6, key = 'feature', value  = 'value')
+  levels <- c( "",   "None", "intralaminar",   "translaminar", "intracolumnar", "transcolumnar",      "centered",   "displaced",   "ascending",       "both",  "descending",          "arcade","Cajal-Retzius",           "chandelier",         "common basket",   "common type",                  "horse-tail",             "large basket",    "Martinotti",      "neurogliaform",   "other",       "characterized",           "uncharacterized")
+  stopifnot(identical(sort(levels), sort(unique(a$value))))
+  a$value <- factor(a$value, levels = levels)
   a
 }
-
 # a %>% group_by(feature, value) %>% tally()
 get_all_counts_meta <- function(folder) {
   counts <- get_all_counts(folder)

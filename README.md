@@ -29,12 +29,12 @@ library(tidyverse)
 #> Registered S3 method overwritten by 'rvest':
 #>   method            from
 #>   read_xml.response xml2
-#> ── Attaching packages ────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+#> ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 #> ✔ ggplot2 3.1.1       ✔ purrr   0.3.2  
 #> ✔ tibble  2.1.1       ✔ dplyr   0.8.0.1
 #> ✔ tidyr   0.8.3       ✔ stringr 1.4.0  
 #> ✔ readr   1.3.1       ✔ forcats 0.4.0
-#> ── Conflicts ───────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+#> ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
 ```
@@ -286,7 +286,17 @@ These data are also available in a different format, which is a bit
 easier to analyze
 
 ``` r
-# TODO
+annot_tidy <- make_annotations_tidy(annotations) 
+#> Warning: attributes are not identical across measure variables;
+#> they will be dropped
+head(annot_tidy )
+#>   annotator neuron feature        value
+#> 1         1      1      F1 intralaminar
+#> 2         1      2      F1 translaminar
+#> 3         1      3      F1 translaminar
+#> 4         1      4      F1 translaminar
+#> 5         1      5      F1 translaminar
+#> 6         1      6      F1 intralaminar
 ```
 
 Examples
@@ -301,13 +311,66 @@ table(annotations$complete)
 #>   482 13860
 ```
 
--   How many neuroscientists have provided alternative type names?
+-   Get row frequencies of the different categories
 
--   Directly filter by confidence in some variable. Here, use the row
-    verions.
+``` r
+annot_tidy <- make_annotations_tidy(annotations) 
+#> Warning: attributes are not identical across measure variables;
+#> they will be dropped
+annot_tidy %>% group_by(feature, value) %>% tally()
+#> # A tibble: 31 x 3
+#> # Groups:   feature [6]
+#>    feature value             n
+#>    <chr>   <chr>         <int>
+#>  1 F1      ""              151
+#>  2 F1      intralaminar   3895
+#>  3 F1      None           1326
+#>  4 F1      translaminar   8970
+#>  5 F2      ""              175
+#>  6 F2      intracolumnar  7660
+#>  7 F2      None           1326
+#>  8 F2      transcolumnar  5181
+#>  9 F3      ""              254
+#> 10 F3      centered       5649
+#> # … with 21 more rows
+# library(ggplot2)
+ggplot(annot_tidy, aes(x = value, color = feature)) + geom_bar() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
 
--   Statistics for a species
-    -   we join, then filter
+![](README-unnamed-chunk-14-1.png)
+
+-   Filter by confidence in a feature. Here, use the row verions.
+
+-   Restrict analysis to unrotated, monkey cells
+-   we join, then filter
+
+``` r
+monkey <- metadata %>% filter(species == 'Monkey')
+counts <- get_all_counts_meta(folder)
+#> Warning: attributes are not identical across measure variables;
+#> they will be dropped
+counts %>% filter(species == 'Monkey') 
+#> # A tibble: 68 x 26
+#>    neuron intralaminar translaminar intracolumnar transcolumnar centered
+#>    <fct>         <int>        <int>         <int>         <int>    <int>
+#>  1 1                44            2            44             0       44
+#>  2 6                45            1            45             0       44
+#>  3 9                 4           43             8            38       30
+#>  4 12                9           35             1            44       35
+#>  5 14                1           43            45             0       27
+#>  6 22                2           39            41             1        4
+#>  7 27               18           27            44             1       39
+#>  8 28                1           40            39             3        1
+#>  9 33               34            9            41             1       31
+#> 10 37               37            0            36             0       30
+#> # … with 58 more rows, and 20 more variables: displaced <int>,
+#> #   ascending <int>, both <int>, descending <int>, arcade <int>,
+#> #   `Cajal-Retzius` <int>, chandelier <int>, `common basket` <int>,
+#> #   `common type` <int>, `horse-tail` <int>, `large basket` <int>,
+#> #   Martinotti <int>, neurogliaform <int>, other <int>,
+#> #   characterized <int>, uncharacterized <int>, species <fct>, area <fct>,
+#> #   layer <fct>, rotated <lgl>
+```
 
 ### Alternative type names
 
@@ -332,7 +395,7 @@ other <- annotations %>% group_by(annotator) %>% filter(F5 == 'other') %>% tally
 ggplot(data.frame(types = types$n, cells = other$n), aes(x = types, y = cells)) + geom_point()
 ```
 
-![](README-unnamed-chunk-15-1.png)
+![](README-unnamed-chunk-17-1.png)
 
 -   Words used in alternative types and definitions:
     -   The most common word is \`bitufted’
@@ -362,7 +425,7 @@ alt %>%  count(type, sort = TRUE)
 alt %>%  count(type, sort = TRUE)      %>%  with(wordcloud(type, n, random.order = FALSE, max.words = 50 , colors= brewer.pal(8,"Dark2")))
 ```
 
-![](README-unnamed-chunk-16-1.png)
+![](README-unnamed-chunk-18-1.png)
 
 ``` r
 alt <- alternative 
@@ -387,6 +450,6 @@ alt %>%  count(definition, sort = TRUE)
 alt %>%  count(definition, sort = TRUE)      %>%  with(wordcloud(definition, n, random.order = FALSE, max.words = 50 , colors= brewer.pal(8,"Dark2")))
 ```
 
-![](README-unnamed-chunk-17-1.png)
+![](README-unnamed-chunk-19-1.png)
 
 \`\`\`
