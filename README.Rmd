@@ -14,13 +14,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-# gardenr 
-The goal of gardenr is to ... The user needs to provide the path to the folder containing the data. These can be downloaded from ...(TODO)
+## gardenr 
+The goal of gardenr is provide simple functions of analyzing the data from Gardener's interneuron classification as well as to provide examples of analyses of such data.
 
+## Installation
+You can use the `devtools` package to install `garnenr` from Github. 
+```{r, eval = FALSE}
+devtools::install_github('ComputationalIntelligenceGroup/gardenr')
+``` 
+
+The user needs to provide the path to the folder containing the data. These can be downloaded from ...(TODO)
 ```{r}
-folder <- '/home/bmihaljevic/code/gardener-experiment-data/data/' 
+folder <- '/home/bmihaljevic/code-gardener/gardener-experiment-data/data/' 
 ```
-
 
 ## Example
 
@@ -31,6 +37,12 @@ annotations <- get_all_labels(folder )
 summary(annotations)
 ``` 
 
+To get data on a specific cell, we only need filter by its id:
+```{r}
+annotations %>% filter(neuron == 12)
+```
+
+
 - 27 out of 48 neuroscientists provided alternative type names for the cells
 ```{r}
 alternative <- get_alternative_types(folder)
@@ -38,9 +50,7 @@ head(alternative)
 length(unique(alternative$annotator))
 unique(alternative$annotator)
 ```
-```{r}
 
-```
 
 We can easily map with the other data frame. **Those which are other, and have this.**
 ```{r}
@@ -53,14 +63,34 @@ library(tidyverse)
 other <- left_join(other, alternative, by = c("other" = "type"))
 length(unique(other$annotator)) 
 ```
-
+- Get the cells metadata
 ```{r}
-
+metadata <- get_all_meta(folder)
+summary(metadata)
 ```
 
+**join this with labels**
+**aggregate counts across neurons**
  
 From here, it is easy to filter for a given cell, species, etc. 
-Also, simple functions that work at cell level:
+```{r}
+# subset, tidy filter
+```
+
+Also, simple functions that work at cell level:  
+
+- One can get statistics with `tidyverse` functions. 
+- Get the counts for all categories. A single entry per neuron.
+```{r}
+counts <- get_all_counts(folder) 
+head(counts)
+```
+
+This is also available in row-view, which is a bit easier to analyze
+Thus, directly filter by confidence in some variable. Here, use the row verions.
 
 
+# Example statistics  
 
+- How many partially labelled cells?
+- ...
