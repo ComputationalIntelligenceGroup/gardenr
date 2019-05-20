@@ -15,7 +15,9 @@ get_alternative_types <- function(folder) {
   alternative
 }
 get_all_meta <- function(folder) {
-  annotations <- read_csv(folder, 'metadata.csv')
+  metadata <- read_csv(folder, 'metadata.csv')
+  metadata$neuron <- as.factor(metadata$neuron )
+  metadata
 }
 #' Returns count for all categories
 #'

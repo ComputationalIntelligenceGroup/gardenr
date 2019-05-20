@@ -50,27 +50,19 @@ summary(metadata)
 To get data on a specific cell or annotator, we only need filter by id:
 ```{r}
 metadata %>% filter(neuron == 12)
-annotations %>% filter(neuron == 12)
+head(annotations %>% filter(neuron == 12))
 ```
 
 ```{r} 
-annotations %>% filter(annotator == 2)
+head(annotations %>% filter(annotator == 2))
 alternative %>% filter(annotator == 2)
-``` 
+```
 
-
-
-It is easy to combine the three data frames using joins, and then compute summaries with `tidyverse` functions. 
+It is easy to combine the three data frames using joins, and then compute summaries with `tidyverse` functions. For example, the alternative type definition to an annotation
 ```{r}
-other <- droplevels(subset(annotations, F5 == 'other'))
-a <- levels(other$other) 
-b <- levels(alternative$type)
-setdiff(a, b)
-setdiff(b, a)
-library(tidyverse)
-other <- left_join(other, alternative, by = c("other" = "type"))
-length(unique(other$annotator)) 
-```   
+head(left_join(annotations, alternative, by = c("other" = "type", "annotator" = "annotator"))) 
+```    
+The primary key in `alternative` consits of `annotator` and `type` and hence we need both in the join.
  
 There is a utility function to return the counts for all categories, with a single entry per neuron.
 ```{r}
@@ -78,18 +70,30 @@ counts <- get_all_counts(folder)
 head(counts)
 ```
 
-This is also available in row-view, which is a bit easier to analyze
+We could joint the above with metadata, to get a thorough information for each cell.
 ```{r}
-
+meta_count <- left_join(counts, metadata, by = 'neuron') %>% select(-paper, -original.type, -archive, -neuromorpho.name)
+head(meta_count)
 ```
 
 
-# Examples 
+These data are also available in a different format, which is a bit easier to analyze
+```{r}
+# TODO
+```
 
+
+# Examples  
 - Those which are other, and have this
 - How many partially labelled cells?
 - ... 
 - Directly filter by confidence in some variable. Here, use the row verions. 
+
+```{r}
+other <- droplevels(subset(annotations, F5 == 'other'))
+length(unique(other$annotator))   
+```   
+
 - Statistics for a species
    - we join, then filter
 
@@ -99,4 +103,4 @@ alternative <- get_alternative_types(folder)
 head(alternative)
 length(unique(alternative$annotator))
 unique(alternative$annotator)
-```
+``` 
