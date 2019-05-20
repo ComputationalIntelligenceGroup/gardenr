@@ -366,5 +366,27 @@ alt %>%  count(type, sort = TRUE)      %>%  with(wordcloud(type, n, random.order
 
 ``` r
 alt <- alternative 
-alt$definition <- as.character(alternative$definition )
+alt$definition <- as.character(alternative$definition )   
+alt <- alt %>% unnest_tokens(definition, definition)
+alt <- alt %>% anti_join(get_stopwords(), by = c("definition" = "word"))
+alt %>%  count(definition, sort = TRUE)      
+#> # A tibble: 427 x 2
+#>    definition     n
+#>    <chr>      <int>
+#>  1 axonal        37
+#>  2 cells         30
+#>  3 cell          25
+#>  4 see           22
+#>  5 layer         20
+#>  6 soma          18
+#>  7 arbor         15
+#>  8 domain        15
+#>  9 layers        14
+#> 10 dendritic     13
+#> # … with 417 more rows
+alt %>%  count(definition, sort = TRUE)      %>%  with(wordcloud(definition, n, random.order = FALSE, max.words = 50 , colors= brewer.pal(8,"Dark2")))
 ```
+
+![](README-unnamed-chunk-17-1.png)
+
+\`\`\`
