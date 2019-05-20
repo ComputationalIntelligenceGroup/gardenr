@@ -31,12 +31,35 @@ annotations <- get_all_labels(folder )
 summary(annotations)
 ``` 
 
+- 27 out of 48 neuroscientists provided alternative type names for the cells
 ```{r}
-get_alternative_types(folder)
+alternative <- get_alternative_types(folder)
+head(alternative)
+length(unique(alternative$annotator))
+unique(alternative$annotator)
+```
+```{r}
+
 ```
 
-From here, it is easy to filter for a given cell, species, etc.
+We can easily map with the other data frame. **Those which are other, and have this.**
+```{r}
+other <- droplevels(subset(annotations, F5 == 'other'))
+a <- levels(other$other) 
+b <- levels(alternative$type)
+setdiff(a, b)
+setdiff(b, a)
+library(tidyverse)
+other <- left_join(other, alternative, by = c("other" = "type"))
+length(unique(other$annotator)) 
+```
 
+```{r}
+
+```
+
+ 
+From here, it is easy to filter for a given cell, species, etc. 
 Also, simple functions that work at cell level:
 
 
