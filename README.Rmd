@@ -70,7 +70,7 @@ counts <- get_all_counts(folder)
 head(counts)
 ```
 
-We can join the above with metadata, to get a thorough information for each cell. 
+We can join the above with metadata to get thorough information for each cell. 
 ```{r}
 meta_count <- left_join(counts, metadata, by = 'neuron') %>% select(-paper, -original.type, -archive, -neuromorpho.name)
 head(meta_count)
@@ -93,7 +93,7 @@ head(annot_tidy )
 table(annotations$complete) 
 ``` 
 
-- Get row frequencies of the different categories
+- Get raw frequencies of the different categories
 ```{r}  
 annot_tidy <- make_annotations_tidy(annotations) 
 annot_tidy %>% group_by(feature, value) %>% tally()

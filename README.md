@@ -21,20 +21,12 @@ These can be downloaded from …(TODO)
 ``` r
 folder <- '/home/bmihaljevic/code-gardener/gardener-experiment-data/data/' 
 library(tidyverse)
-#> Registered S3 methods overwritten by 'ggplot2':
-#>   method         from 
-#>   [.quosures     rlang
-#>   c.quosures     rlang
-#>   print.quosures rlang
-#> Registered S3 method overwritten by 'rvest':
-#>   method            from
-#>   read_xml.response xml2
-#> ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
-#> ✔ ggplot2 3.1.1       ✔ purrr   0.3.2  
-#> ✔ tibble  2.1.1       ✔ dplyr   0.8.0.1
-#> ✔ tidyr   0.8.3       ✔ stringr 1.4.0  
-#> ✔ readr   1.3.1       ✔ forcats 0.4.0
-#> ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+#> ── Attaching packages ───────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+#> ✔ ggplot2 3.2.0     ✔ purrr   0.3.2
+#> ✔ tibble  2.1.3     ✔ dplyr   0.8.1
+#> ✔ tidyr   0.8.3     ✔ stringr 1.4.0
+#> ✔ readr   1.3.1     ✔ forcats 0.4.0
+#> ── Conflicts ──────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 #> ✖ dplyr::filter() masks stats::filter()
 #> ✖ dplyr::lag()    masks stats::lag()
 ```
@@ -49,6 +41,8 @@ functions for the classification labels `get_all_labels`, metadata
 
 ``` r
 library(gardenr)
+#> Warning: replacing previous import 'magrittr::extract' by 'tidyr::extract'
+#> when loading 'gardenr'
 #> 
 #> Attaching package: 'gardenr'
 #> The following object is masked from 'package:readr':
@@ -234,8 +228,8 @@ head(counts)
 #> #   uncharacterized <int>
 ```
 
-We can join the above with metadata, to get a thorough information for
-each cell.
+We can join the above with metadata to get thorough information for each
+cell.
 
 ``` r
 meta_count <- left_join(counts, metadata, by = 'neuron') %>% select(-paper, -original.type, -archive, -neuromorpho.name)
@@ -311,7 +305,7 @@ table(annotations$complete)
 #>   482 13860
 ```
 
--   Get row frequencies of the different categories
+-   Get raw frequencies of the different categories
 
 ``` r
 annot_tidy <- make_annotations_tidy(annotations) 
@@ -321,17 +315,17 @@ annot_tidy %>% group_by(feature, value) %>% tally()
 #> # A tibble: 31 x 3
 #> # Groups:   feature [6]
 #>    feature value             n
-#>    <chr>   <chr>         <int>
+#>    <chr>   <fct>         <int>
 #>  1 F1      ""              151
-#>  2 F1      intralaminar   3895
-#>  3 F1      None           1326
+#>  2 F1      None           1326
+#>  3 F1      intralaminar   3895
 #>  4 F1      translaminar   8970
 #>  5 F2      ""              175
-#>  6 F2      intracolumnar  7660
-#>  7 F2      None           1326
+#>  6 F2      None           1326
+#>  7 F2      intracolumnar  7660
 #>  8 F2      transcolumnar  5181
 #>  9 F3      ""              254
-#> 10 F3      centered       5649
+#> 10 F3      None           1326
 #> # … with 21 more rows
 # library(ggplot2)
 ggplot(annot_tidy, aes(x = value, color = feature)) + geom_bar() + theme(axis.text.x = element_text(angle = 90, hjust = 1))
