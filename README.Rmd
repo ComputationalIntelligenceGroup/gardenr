@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 The goal of gardenr is provide simple functions of analyzing the data from Gardener's interneuron classification as well as to provide examples of analyses of such data.
 
 ## Installation
-You can use the `devtools` package to install `garnenr` from Github. 
+You can use the `devtools` package to install `gardenr` from Github. 
 ```{r, eval = FALSE}
 devtools::install_github('ComputationalIntelligenceGroup/gardenr')
 ``` 

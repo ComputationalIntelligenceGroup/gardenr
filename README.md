@@ -9,7 +9,7 @@ examples of analyses of such data.
 Installation
 ------------
 
-You can use the `devtools` package to install `garnenr` from Github.
+You can use the `devtools` package to install `gardenr` from Github.
 
 ``` r
 devtools::install_github('ComputationalIntelligenceGroup/gardenr')
