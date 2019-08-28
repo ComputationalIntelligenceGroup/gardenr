@@ -462,5 +462,3 @@ alt %>%  count(definition, sort = TRUE)      %>%  with(wordcloud(definition, n, 
 ```
 
 ![](README-unnamed-chunk-20-1.png)
-
-\`\`\`

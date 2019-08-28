@@ -150,7 +150,4 @@ alt <- alt %>% unnest_tokens(definition, definition)
 alt <- alt %>% anti_join(get_stopwords(), by = c("definition" = "word"))
 alt %>%  count(definition, sort = TRUE)      
 alt %>%  count(definition, sort = TRUE)      %>%  with(wordcloud(definition, n, random.order = FALSE, max.words = 50 , colors= brewer.pal(8,"Dark2")))
-```
-
-```
-
+```  
